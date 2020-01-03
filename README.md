@@ -1,3 +1,4 @@
-# fe-demo
+# fe-demos 在线前端demo
 
-data-analysis 监管数据监控大屏
+[数据监控大屏demo](https://aero-ku.github.io/fe-demos/data-analysis/jdxw-zhtj.html)
+  兼容IE8
