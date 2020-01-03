@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <title>银保监监管行为综合分析</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum=scale=1.0,user-scalable=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=8" />
+    <link href="./css/jgsjzhfx.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="../js/html5shiv.js"></script>
+    <script src="../js/respond.js"></script>
+    <![endif]-->
+</head>
+<style>
+</style>
+<body>
+<div class="header-wrap container" style="min-width: 1200px;">
+    <div class="header"></div>
+    <div class="date-show row">
+        <div class="col-xs-12">
+            <span class="currentDate"></span><span class="currentWeek"></span>
+        </div>
+    </div>
+ </div>
+<div class="container-fluid">
+    <div class="row no-gutters" style="min-width: 1200px;">
+        <div class="col-xs-2 module no-gutter">
+            <img src="./img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="objectNum"></span><span class="unit">个</span>
+                <span class="number-type">对象</span>
+            </div>
+        </div>
+        <div class="col-xs-2 module">
+            <img src="./img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="enforceNum"></span><span class="unit">个</span>
+                <span class="number-type">执法人员</span>
+            </div>
+        </div>
+        <div class="col-xs-2 module">
+            <img src="./img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="checkNum"></span><span class="unit">个</span>
+                <span class="number-type">检查</span>
+            </div>
+        </div>
+        <div class="col-xs-2 module" >
+            <img src="./img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="punishNum"></span><span class="unit">个</span>
+                <span class="number-type">处罚</span>
+            </div>
+        </div>
+        <div class="col-xs-2 module">
+            <img src="./img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="reportNum"></span><span class="unit">个</span>
+                <span class="number-type">投诉举报</span>
+            </div>
+        </div>
+        <div class="col-xs-2 module">
+            <img src="./img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="ruleNum"></span><span class="unit">个</span>
+                <span class="number-type">法律法规</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div id="lineChart" style="min-width: 1200px;"></div>
+</div>
+<div class="pieChart-wrap" style="min-width: 1200px;">
+    <div class="pieChart" id="pie1"></div>
+    <div class="pieChart" id="pie2"></div>
+    <div class="pieChart" id="pie3"></div>
+    <div class="pieChart" id="pie4"></div>
+</div>
+<div class="statistics-wrap">
+    <img src="./img/bottom-border.png" class="statistics-bg"/>
+    <div class="statistics check-object">
+        <div class="title">对象检查次数 TOP10</div>
+        <ul class="content" id="objectCheckCount">
+            
+        </ul>
+    </div>
+    <div class="divider-line"></div>
+    <div class="statistics check-time">
+        <div class="title">对象处罚次数 TOP10</div>
+        <ul class="content" id="penaltyOfCount">
+           
+        </ul>
+    </div>
+    <div class="divider-line last"></div>
+    <div class="statistics punish-amount">
+        <div class="title">对象处罚金额 TOP10</div>
+        <ul class="content" id="amountOfPenalty">
+            
+        </ul>
+    </div>
+    <div class="bottom"></div>
+</div>
+
+</body>
+<script src="./js/jquery.js"></script>
+<script src="./js/echarts.min.js"></script>
+<script src="./js/countup.js"></script>
+<script src="./js/util.js"></script>
+<script src="./data.js"></script>
+<script>
+    getWeekDate();
+// filter 兼容IE8
+	if(!Array.prototype.filter){
+		Array.prototype.filter = function(fun /*, thisArg */){
+			"use strict";
+			
+			if(this === void 0 || this === null)
+				throw new TypeError();
+			var t = Object(this);
+			var len = t.length >>> 0;
+			if(typeof fun != "function")
+				throw new TypeError();
+			
+			var res = [];
+			var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+			for(var i = 0; i < len; i++){
+				if(i in t){
+					var val = t[i];
+					if(fun.call(thisArg, val, i, t))
+						res.push(val);
+				}
+			}
+			return res;
+		}
+	}
+	// indexOf 兼容IE8
+	if(!Array.prototype.indexOf){
+		Array.prototype.indexOf = function(elt /*, from */){
+			var len = this.length >>> 0;
+			
+			var from = Number(arguments[1]) || 0;
+			from = (from < 0) ? Math.ceil(from) : Math.floor(from);
+			if(from < 0)
+				from += len;
+			for(; from < len; from++){
+				if(from in this && this[from] == elt)
+					return from;
+			}
+			return -1;
+		};
+	}
+	// forEach 兼容IE8
+	if(!Array.prototype.forEach){
+		Array.prototype.forEach = function forEach(callback, thisArg){
+			var T, k;
+			if(this == null){
+				throw new TypeError("this is null or not defined");
+			}
+			var O = Object(this);
+			var len = O.length >>> 0;
+			if(typeof callback !== "function"){
+				throw new TypeError(callback + "is not a function");
+			}
+			if(arguments.length > 1) {
+				T = thisArg;
+			}
+			k = 0;
+			while(k < len) {
+				var kValue;
+				if(k in O){
+					kValue = O[k];
+					callback.call(T, kValue, k, O);
+				}
+				k++;
+			}
+		}
+	}
+	// push 兼容IE8
+	var push = [].push;
+	try{
+		//判断push是否可用
+		var container = document.createElement("div");
+		container.innerHTML = "<p></p><p></p>";
+		push.apply([], container.childNodes);
+	} catch(e){
+		//封装push方法
+		push = {
+				apply: function(target, els){
+					var j = target.length;
+					var i = 0;
+					while(target[j++] = els[i++]) {}
+					target.length = j - 1;
+				}
+		}
+	} finally {
+		container = null;
+	}
+	//判断当前浏览器环境是否IE8,兼容样式
+	if(navigator.userAgent.indexOf("MSIE 8.0") > 0){
+		$(".statistics .content li").css({'margin': 0});
+		$(".statistics .content").css({'margin': 0});
+		$(".statistics").css({'height': "83%"});
+	}
+    var data = null;
+    $(".currentDate").text(getDate());
+    $(".currentWeek").text(getWeekDate())
+    window.onload = function(){
+        data = resp.data;
+        var countUpOption = {
+            useEasing: true,
+            useGrouping: true,
+            separator: ',',
+            decimal: '.'
+        }
+        console.log(data);
+        var objectNum = new CountUp('objectNum', 0, data.regulatoryObjectCount, 0, 1, countUpOption);
+        var enforceNum = new CountUp('enforceNum', 0, data.zfUserAllCount, 0, 1, countUpOption);
+        var checkNum = new CountUp('checkNum', 0, data.checkActionAllCount, 0, 1, countUpOption);
+        var punishNum = new CountUp('punishNum', 0, data.punishAllCount, 0, 1, countUpOption);
+        var reportNum = new CountUp('reportNum', 0, data.reportCount, 0, 1, countUpOption);
+        var ruleNum = new CountUp('ruleNum', 0, data.lawsRegulatCount, 0, 1, countUpOption);
+        objectNum.start();
+        enforceNum.start();
+        checkNum.start();
+        punishNum.start();
+        checkNum.start();
+        reportNum.start();
+        ruleNum.start();
+        //对象检查次数
+        var objectCheckCount = data.objectCheckCount
+        var objectCheckCountStr = ''
+        for(var i = 0; i < objectCheckCount.length; i++){
+            objectCheckCountStr += '<li>' + objectCheckCount[i].yearPeriod + '</li>'
+        }
+        $("#objectCheckCount").html(objectCheckCountStr);
+        //对象处罚次数
+        var penaltyOfCount = data.penaltyOfCount
+        var penaltyOfCountStr = ''
+        for(var i = 0; i < penaltyOfCount.length; i++){
+            penaltyOfCountStr += '<li>' + penaltyOfCount[i].yearPeriod + '</li>'
+        }
+        $("#penaltyOfCount").html(penaltyOfCountStr);
+
+        //对象处罚金额Top10
+        var amountOfPenalty = data.amountOfPenalty;
+        var amountOfPenaltyStr = '';
+        for(var i = 0; i < amountOfPenalty.length; i++){
+            amountOfPenaltyStr += '<li>'+ amountOfPenalty[i].yearPeriod +'</li>';
+        }
+        $("#amountOfPenalty").html(amountOfPenaltyStr)
+		// 获取最大最小年份
+		function getYears(obj){
+        	var arr = [];
+        	if (obj.amountOfFine) {
+        		for (var i = 0; i < obj.amountOfFine.length; i++) {
+        			if(obj.amountOfFine[i].yearPeriod){
+        				arr.push(parseInt(obj.amountOfFine[i].yearPeriod, 10));
+        			}
+        		}
+        	}
+        	if (obj.zfUserCount) {
+        		for (var i = 0; i < obj.zfUserCount.length; i++) {
+        			if(obj.zfUserCount[i].yearPeriod){
+        				arr.push(parseInt(obj.zfUserCount[i].yearPeriod, 10));
+        			}
+        		}
+        	}
+        	if (obj.checkActionCount) {
+        		for (var i = 0; i < obj.checkActionCount.length; i++) {
+        			if(obj.checkActionCount[i].yearPeriod){
+        				arr.push(parseInt(obj.checkActionCount[i].yearPeriod, 10));
+        			}
+        		}
+        	}
+        	if (obj.punishCount) {
+        		for (var i = 0; i < obj.punishCount.length; i++) {
+        			if(obj.punishCount[i].yearPeriod){
+        				arr.push(parseInt(obj.punishCount[i].yearPeriod, 10));
+        			}
+        		}
+        	}
+        	return uniqueArr(arr);
+        }
+        // 数组去重处理
+        function uniqueArr(arr){
+        	var res= arr.filter(function(item, index, array){
+        		return arr.indexOf(item) === index;
+        	})
+        	return res.sort();
+        } 
+        var yearArr = getYears(data);
+        var flag = false;
+        var maxYear = Math.max.apply(null, yearArr);
+        var minYear = Math.min.apply(null, yearArr);
+        //执法人员
+        var zfUserCount = []
+        /*for(var i = 0; i < data.zfUserCount.length; i ++){
+            if(data.zfUserCount[i].yearPeriod){ // 年份不为空
+            	var newObj = {}
+            	newObj[data.zfUserCount[i].yearPeriod] = data.zfUserCount[i].count;
+            	zfUserCount.push(newObj);
+            }
+        }*/
+        yearArr.forEach(function(item, arr){
+        	for (var i = 0; i < data.zfUserCount.length; i++) {
+        		if (data.zfUserCount[i].yearPeriod == item) {
+        			zfUserCount.push(data.zfUserCount[i].count);
+        			flag = true;
+        		}
+        	}
+        	if(!flag){
+        		zfUserCount.push(0);
+        	}
+        	flag = false;
+        })
+        //检查行为
+        var checkActionCount = []
+        flag = false;
+        yearArr.forEach(function(item, arr){
+        	for (var i = 0; i < data.checkActionCount.length; i++) {
+        		if (data.checkActionCount[i].yearPeriod == item) {
+        			checkActionCount.push(data.checkActionCount[i].count);
+        			flag = true;
+        		}
+        	}
+        	if(!flag){
+        		checkActionCount.push(0);
+        	}
+        	flag = false;
+        })
+        
+        //处罚数量
+        var punishCount = []
+		flag = false;
+        yearArr.forEach(function(item, arr){
+        	for (var i = 0; i < data.punishCount.length; i++) {
+        		if (data.punishCount[i].yearPeriod == item) {
+        			punishCount.push(data.punishCount[i].count);
+        			flag = true;
+        		}
+        	}
+        	if(!flag){
+        		punishCount.push(0);
+        	}
+        	flag = false;
+        })
+	
+        // 罚款金额
+        var amountOfFine = []
+		
+		
+        flag = false;
+        yearArr.forEach(function(item, arr){
+        	for(var i = 0; i < data.amountOfFine.length; i++){
+        		if(data.amountOfFine[i].yearPeriod == item) {
+        			amountOfFine.push((data.amountOfFine[i].count / 10000).toFixed(4));
+        			flag = true;
+        		}
+        	}
+        	if(!flag){
+        		amountOfFine.push(0);
+        	}
+        	flag = false;
+        })
+        var lineChart = echarts.init(document.getElementById("lineChart"));
+        var lineOption = {
+            color: ['#000'],
+            title: {
+                text: '',
+                subtext: ''
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: function(params){
+                	return '<p>执法人员：' + params[0].value + '个</p><p>检查行为：' + params[1].value + '次</p>' + '<p>处罚行为：' + params[2].value +  '次</p><p>罚款金额：' + params[3].value + '万元</p>'
+                }
+            },
+            toolbox: {
+                show: true,
+                magicType: {type: ['line', 'bar']}
+            },
+            legend: {
+                data: ['执法人员', '检查行为', '处罚行为', '罚款金额'],
+                textStyle: {
+                    color: '#fff',
+                    fontSize: '16px'
+                }
+            },
+            grid: {show: 'true', borderWidth: 0, height: "60%", width: "80%", y: "20%", x: "10%"},
+            xAxis: {
+                type: 'category',
+                data: yearArr,
+                boundaryGap: false,
+                axisLine: {
+                    lineStyle: {
+                        color: '#32FCF7'
+                    },
+                    symbol:['none', 'path://M5, 20 L5, 5 L8, 8 L5,2 L2, 8, L5, 5 L5.3, 6 L5.3, 20'],
+                    symbolOffset: 10,
+                    symbolSize: [35, 38]
+                }
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: ['#32FCF7']
+                    },
+                    symbol:['none', 'path://M5, 20 L5, 5 L8, 8 L5,2 L2, 8, L5, 5 L5.3, 6 L5.3, 20'],
+                    //symbol: ['none', 'arrow'],
+                    symbolOffset: 10,
+                    symbolSize: [35, 38]
+                },
+                splitLine: {
+                    show: true,
+                    lineStyle: {
+                        color: '#DFF8F8',
+                        opacity: 0.2
+                    }
+                }
+            },
+            textStyle: {
+                color: '#DFF8F8'
+            },
+            series: [{
+                name: '执法人员',
+                type: 'line',
+                data: zfUserCount,
+                markLine: {
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                },
+                color: '#B1FFA8'
+            },{
+                name: '检查行为',
+                type: 'line',
+                data: checkActionCount,
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name:　'最小值'}
+                    ]
+                },
+                color: '#326FE9'
+            },
+                {
+                    name: '处罚行为',
+                    type: 'line',
+                    data: punishCount,
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: '最大值'},
+                            {type: 'min', name:　'最小值'}
+                        ]
+                    },
+                    color: '#FFABAB'
+                },
+                {
+                    name: '罚款金额',
+                    type: 'line',
+                    data: amountOfFine,
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: '最大值'},
+                            {type: 'min', name:　'最小值'}
+                        ]
+                    },
+                    color: '#F9ABFF'
+                }]
+        }
+        lineChart.setOption(lineOption);
+
+        //检查结果饼图
+        var checkResultPie = []
+        for(var i = 0; i < data.checkResult.length; i++){
+            var newObj = {}
+            newObj["value"] = data.checkResult[i].count
+            newObj["name"] = data.checkResult[i].yearPeriod
+            checkResultPie.push(newObj);
+        }
+
+        //检查方式饼图
+        var checkMethodPie = []
+        for(var i = 0; i < data.checkMothod.length; i++){
+            var newObj = {}
+            newObj["value"] = data.checkMothod[i].count
+            newObj["name"] = data.checkMothod[i].yearPeriod
+            checkMethodPie.push(newObj);
+        }
+        
+        //处罚种类饼图
+        var punishKinds = []
+        for(var i = 0; i < data.punishKinds.length; i++){
+        	var newObj = {}
+        	newObj["value"] = data.punishKinds[i].count;
+        	newObj["name"] = data.punishKinds[i].yearPeriod
+        	punishKinds.push(newObj);
+        }
+
+        //投诉举报饼图
+        var tsjbPie = []
+        var newObj = {}, newObj1 = {}
+        newObj["name"] = "投诉数量"; newObj["value"] = data.complaintCount
+        newObj1["name"] = "举报数量"; newObj1["value"] = data.accusCount
+        tsjbPie.push(newObj);
+        tsjbPie.push(newObj1);
+        var pieChart1 = echarts.init(document.getElementById("pie1"));
+        var pieChart2 = echarts.init(document.getElementById("pie2"));
+        var pieChart3 = echarts.init(document.getElementById("pie3"));
+        var pieChart4 = echarts.init(document.getElementById("pie4"));
+
+        var pieOption1 = {
+            title: {
+                text: '检查结果',
+                textStyle: {
+                    color: '#32FCF7'
+                },
+                textAlign: 'left',
+                itemGap: 300,
+                x: 'center',
+                y: 'bottom'
+            },
+            /*
+            legend: {
+                x: 'center',
+                y: 'top',
+                textStyle: {
+                    color: '#32f4f1'
+                }
+            },
+*/
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            series: [
+                {
+                    name: '检查结果',
+                    type: 'pie',
+                    radius : '50%',
+                    center: ['50%', '50%'],
+                    data: checkResultPie,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: '#4295B2',
+                            containLabel: true
+                        }
+                    },
+                    color: ['#ECE2A6', '#46D0CC', '#4295B2', '#A6ECC4', '#00CACA'],
+                    label: {
+                        normal: {
+                            position: 'outer',
+                            formatter: formatterLabelText
+                        }
+                    }
+                }
+            ]
+        }
+        var pieOption2 = {
+            title: {
+                text: '处罚种类',
+                textStyle: {
+                    color: '#32FCF7'
+                },
+                textAlign: 'left',
+                itemGap: 300,
+                x: 'center',
+                y: 'bottom'
+            },
+            // legend: {
+            //     x: 'center',
+            //     y: 'top',
+            //     textStyle: {
+            //         color: '#32f4f1'
+            //     }
+            //  },
+
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c}({d}%)"
+            },
+            series: [
+                {
+                    name: '处罚种类',
+                    type: 'pie',
+                    radius : '50%',
+                    center: ['50%', '50%'],
+                    data: punishKinds,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: '#4295B2'
+                        }
+                    },
+                    color: ['#ECE2A6', '#4295B2', '#A6ECC4', '#46D0CC', '#00CACA'],
+                    label: {
+                        normal: {
+                            position: 'outer',
+	                        formatter: formatterLabelText
+                        },
+                    }
+                }
+            ]
+        }
+        var pieOption3 = {
+            title: {
+                text: '检查方式',
+                textStyle: {
+                    color: '#32FCF7'
+                },
+                textAlign: 'left',
+                itemGap: 300,
+                x: 'center',
+                y: 'bottom'
+            },
+
+
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c}({d}%)"
+            },
+            series: [
+                {
+                    name: '检查方式',
+                    type: 'pie',
+                    radius : '48%',
+                    center: ['50%', '50%'],
+                    data: checkMethodPie,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: '#4295B2'
+                        }
+                    },
+                    color: ['#ECE2A6', '#4295B2', '#A6ECC4', '#46D0CC', '#00CACA'],
+                    label: {
+                        normal: {
+                            position: 'outer',
+                            formatter: formatterLabelText
+                        },
+                    }
+                }
+            ]
+        }
+        var pieOption4 = {
+            title: {
+                text: '投诉举报',
+                textStyle: {
+                    color: '#32FCF7'
+                },
+                textAlign: 'left',
+                x: 'center',
+                y: 'bottom'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c}({d}%)"
+            },
+            series: [
+                {
+                    name: '投诉举报',
+                    type: 'pie',
+                    radius : '50%',
+                    center: ['50%', '50%'],
+                    data: tsjbPie,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: '#4295B2'
+                        }
+                    },
+                    color: ['#ECE2A6', '#4295B2'],
+                    label: {
+                    	normal: {
+                    		formatter: formatterLabelText
+                    	}
+                    }
+                }
+            ]
+        }
+
+        pieChart1.setOption(pieOption1);
+        pieChart2.setOption(pieOption2);
+        pieChart3.setOption(pieOption3);
+        pieChart4.setOption(pieOption4);
+        
+        // 动态获取元素高度 解决内容文本溢出边框
+        // objectCheckCount penaltyOfCount amountOfPenalty
+        function computedHeight(){
+            var height = $(".content").height();
+            var h1 = $("#objectCheckCount").height();
+            var h2 = $("#penaltyOfCount").height();
+            var h3 = $("#amountOfPenalty").height();
+            var minHeight = Math.max.call(null, h1, h2, h3);
+            console.log(h1, h2, h3, minHeight);
+            if(minHeight < 320){
+            	$(".statistics").css({
+                	height: 320
+                })
+                $(".statistics-bg").css({
+                	height: 390
+                })
+            } else {
+            	$(".statistics").css({
+                	height: minHeight + 80
+                })
+                $(".statistics-bg").css({
+                	height: minHeight + 180
+                })
+            }
+            var lh = document.getElementsByClassName('title')[0].clientHeight;
+            for(var i = 0; i < 3; i++){
+                document.getElementsByClassName('title')[i].style.lineHeight = lh + 'px';
+            }
+        }
+        computedHeight();
+    }
+
+
+
+
+
+
+    $(function(){
+        var setting1 = {
+            cols: 3,
+            headers: [
+                {key: "", title:"排名"},
+                {key:"", title:"机构名称"},
+                {key:"", title:"检查次数"},
+            ],
+            tableId: 'data-table1',
+        }
+        var setting2 = {
+            cols: 3,
+            headers: [
+                {key: "", title:"排名"},
+                {key:"", title:"处罚对象"},
+                {key:"", title:"处罚次数"},
+            ],
+            tableId: 'data-table2',
+        }
+        var setting3 = {
+            cols: 3,
+            headers: [
+                {key: "", title:"排名"},
+                {key:"", title:"处罚对象"},
+                {key:"", title:"处罚金额"},
+            ],
+            tableId: 'data-table3',
+
+        }
+    })
+
+    window.onresize = function() {
+       // lineChart.resize();
+    };
+    //获取当前年月日
+	function getDate(){
+		var date = new Date();
+		return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日';
+	}
+    //获取当前星期几
+    function getWeekDate() {
+    	var now = new Date();
+    	var day = now.getDay();
+    	var weeks = new Array("星期日", "星期一", "星期二" , "星期三", "星期四", "星期五", "星期六");
+    	return weeks[day];
+    }
+    //解决饼图标签文字过长而显示不全问题
+    function formatterLabelText(e){
+    	var newStr = '';
+    	var start, end;
+    	var name_len = e.name.length;
+    	var max_name = 6;
+    	var row_count = Math.ceil(name_len / max_name);
+    	if(name_len > max_name){
+        	for(var i = 0; i < row_count; i ++){
+        		var old = '';
+        		start = i*max_name;
+        		end = start + max_name;
+        		if(i == row_count - 1){
+        			old = e.name.substring(start);
+        		} else {
+        			old = e.name.substring(start, end) + "\n";
+        		}
+        		newStr += old;
+        	}
+    	} else {
+    		newStr = e.name;
+    	}
+		return newStr;
+    }
+    
+    //Top 10 内容文字超出处理
+    /* window.onload = function(){
+    } */
+</script>
+</html>

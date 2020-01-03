@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <title>银保监监管行为综合分析</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum=scale=1.0,user-scalable=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=8" />
+    <link href="../css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="../js/html5shiv.js"></script>
+    <script src="../js/respond.js"></script>
+    <![endif]-->
+</head>
+<style>
+    html, body{
+        margin: 0;
+        background-image: url('../img/background.png');
+        background-size: cover;
+        width: 100%;
+    }
+    .header-wrap{
+        position: relative;
+        height: 85px;
+        width: 100%;
+    }
+    .header{
+        background-image: url('../img/header.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position-x: center;
+        width: 100%;
+        height: 100%;
+        min-width: 1024px;
+    }
+    .date-show{
+        position: absolute;
+        left: 30px;
+        top: 20px;
+    }
+    .date-show span{
+        color: #fff;
+        margin-right: 20px;
+        font-size: 14px;
+        height: 20px;
+        line-height: 20px;
+    }
+    .date-show .sun{
+        display: inline-block;
+        height: 16px;
+        width: 16px;
+        background-image: url('../img/sun.png');
+        background-size: cover;
+        vertical-align: middle;
+    }
+
+    .container-fluid{
+        margin-top: 20px;
+    }
+    .number-show{
+        text-align: center;
+    }
+    .module{
+        position: relative;
+
+    }
+    .number-bg{
+        display: inline-block;
+        width: 100%;
+        height: 130px;
+        /*background-image: url(../img/numberBackground.png);*/
+        /*opacity: 0.61;*/
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+    .number-wrap{
+        position: absolute;
+        width: 100%;
+        height: 130px;
+        top: 0;
+        left: 0;
+    }
+    .number-wrap .number{
+        color: #fcff00;
+        font-size: 44px;
+        position: absolute;
+        top: 16%;
+        left: 7%;
+        width: 70%;
+        text-align: center;
+    }
+
+    .number-wrap .unit{
+        color: #32fffa;
+        font-size: 20px;
+        position: absolute;
+        top: 58%;
+        left: 70%;
+    }
+
+    .number-wrap .number-type{
+        position: absolute;
+        top: 104%;
+        left: 0;
+        width: 100%;
+        color: #32fffa;
+        font-size: 18px;
+        letter-spacing: 1.64px;
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+    }
+
+    #lineChart{
+        margin-top: 30px;
+        width: 100%;
+        height: 320px;
+    }
+
+    .pieChart-wrap{
+        width: 100%;
+        height: 260px;
+    }
+    .pieChart-wrap .pieChart{
+        display: inline-block;
+        width: 25%;
+        height: 200px;
+        float: left;
+    }
+    .statistics-wrap{
+        position: relative;
+        background-size: contain;
+        margin: 0 4%;
+        width: 92%;
+        min-width: 1280px;
+        background-repeat: no-repeat;
+        display: inline-block;
+    }
+    .statistics-bg{
+        width: 100%;
+        min-height: 324px;
+    }
+    .statistics{
+        position: absolute;
+        top: 10%;
+        left: 0;
+        background-image: url('../img/statistics-background.png');
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        display: inline-block;
+        /*margin: 3% 4.5% 0 8%;*/
+        width: 20%;
+        height: 80%;
+    }
+    .statistics.check-object{
+        left: 7%;
+    }
+    .statistics.check-time{
+        left: 43%;
+    }
+    .statistics.punish-amount{
+        left: 75%;
+    }
+    .divider-line{
+        position: absolute;
+        display: inline-block;
+        width: 70px;
+        height: 76%;
+        background-image: url('../img/subfield.png');
+        background-repeat: no-repeat;
+        background-size: contain;
+        left: 32.5%;
+        top: 12%;
+    }
+    .divider-line.last{
+        left: 66.5%;
+    }
+    .statistics .title{
+        color: #00ecff;
+        font-size: 16px;
+        height: 14%;
+        line-height: 42px;
+        text-align: center;
+        font-weight: bold;
+    }
+    .statistics .content{
+        margin: 0;
+        margin-top: 5px;
+        padding-left: 38%;
+        list-style: none;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .statistics .content li{
+        color: #2094cb;
+        text-align: left;
+        list-style-type: decimal;
+        height: 25px;
+        line-height: 25px;
+    }
+    .statistics .content li:nth-of-type(1){
+        /*margin-top: 4px;*/
+    }
+    @media screen and (max-width:1366px) and (min-width: 1024px){
+    }
+    @media screen and (max-width: 1280px) {
+    }
+    @media screen and (max-width: 1024px){
+
+
+    }
+    .bottom{
+        margin-top: 20px;
+    }
+</style>
+<body>
+<div class="header-wrap container" style="min-width: 1280px;">
+    <div class="header"></div>
+    <div class="date-show row">
+        <div class="col-xs-12">
+            <span>2019年12月12日</span><span>12: 20: 10</span><span>星期四</span><span>晴</span><span class="sun"></span>
+        </div></div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row no-gutters" style="min-width: 1280px;">
+        <div class="col-xs-2 module no-gutter">
+            <img src="../img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="objectNum">222</span><span class="unit">个</span>
+                <span class="number-type">对象</span>
+            </div>
+        </div>
+        <div class="col-xs-2 module">
+            <img src="../img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="enforceNum">222</span><span class="unit">个</span>
+                <span class="number-type">执法人员</span>
+            </div>
+        </div>
+        <div class="col-xs-2 module">
+            <img src="../img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="checkNum">222</span><span class="unit">个</span>
+                <span class="number-type">检查</span>
+            </div>
+        </div>
+        <div class="col-xs-2 module" >
+            <img src="../img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="punishNum">222</span><span class="unit">个</span>
+                <span class="number-type">处罚</span>
+            </div>
+        </div>
+        <div class="col-xs-2 module">
+            <img src="../img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="reportNum">222</span><span class="unit">个</span>
+                <span class="number-type">投诉举报</span>
+            </div>
+        </div>
+        <div class="col-xs-2 module">
+            <img src="../img/numberBackground.png" class="number-bg"/>
+            <div class="number-wrap">
+                <span class="number" id="ruleNum">222</span><span class="unit">个</span>
+                <span class="number-type">法律法规</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div id="lineChart" style="min-width: 1280px;"></div>
+</div>
+<div class="pieChart-wrap" style="min-width: 1280px;">
+    <div class="pieChart" id="pie1"></div>
+    <div class="pieChart" id="pie2"></div>
+    <div class="pieChart" id="pie3"></div>
+    <div class="pieChart" id="pie4"></div>
+</div>
+<div class="statistics-wrap">
+    <img src="../img/bottom-border.png" class="statistics-bg"/>
+    <div class="statistics check-object">
+        <div class="title">检查对象 TOP10</div>
+        <ul class="content">
+            <li>工商银行</li>
+            <li>建设银行</li>
+            <li>人寿保险</li>
+            <li>平安保险</li>
+            <li>北京银行</li>
+            <li>农业银行</li>
+            <li>友邦保险</li>
+            <li>太平洋保险</li>
+            <li>交通银行</li>
+            <li>泰康保险</li>
+        </ul>
+    </div>
+    <div class="divider-line"></div>
+    <div class="statistics check-time">
+        <div class="title">对象检查次数 TOP10</div>
+        <ul class="content">
+            <li>工商银行</li>
+            <li>建设银行</li>
+            <li>人寿保险</li>
+            <li>平安保险</li>
+            <li>北京银行</li>
+            <li>农业银行</li>
+            <li>友邦保险</li>
+            <li>太平洋保险</li>
+            <li>交通银行</li>
+            <li>泰康保险</li>
+        </ul>
+    </div>
+    <div class="divider-line last"></div>
+    <div class="statistics punish-amount">
+        <div class="title">对象处罚金额 TOP10</div>
+        <ul class="content">
+            <li>中国工商银行</li>
+            <li>中国建设银行</li>
+            <li>人寿保险</li>
+            <li>平安保险</li>
+            <li>北京银行</li>
+            <li>农业银行</li>
+            <li>友邦保险</li>
+            <li>太平洋保险</li>
+            <li>交通银行</li>
+            <li>泰康保险</li>
+        </ul>
+    </div>
+    <div class="bottom"></div>
+</div>
+
+</body>
+<script src="../js/jquery.js"></script>
+<script src="../js/echarts.min.js"></script>
+<script src="../js/table.js"></script>
+<script src="../js/countup.js"></script>
+<script>
+    var lineChart = echarts.init(document.getElementById("lineChart"));
+    var pieChart1 = echarts.init(document.getElementById("pie1"));
+    var pieChart2 = echarts.init(document.getElementById("pie2"));
+    var pieChart3 = echarts.init(document.getElementById("pie3"));
+    var pieChart4 = echarts.init(document.getElementById("pie4"));
+    var lineOption = {
+        color: ['#000'],
+        title: {
+            text: '',
+            subtext: ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show: true,
+            magicType: {type: ['line', 'bar']}
+        },
+        legend: {
+            data: ['执法人员', '检查行为', '处罚行为', '罚款金额'],
+            textStyle: {
+                color: '#fff',
+                fontSize: '16px'
+            }
+        },
+        grid: {show: 'true', borderWidth: 0, height: "60%", width: "80%", y: "20%", x: "10%"},
+        xAxis: {
+            type: 'category',
+            data: ["2015", "2016", "2017", "2018", "2019"],
+            boundaryGap: false,
+            axisLine: {
+                lineStyle: {
+                    color: '#32FCF7'
+                },
+                symbol:['none', 'path://M5, 20 L5, 5 L8, 8 L5,2 L2, 8, L5, 5 L5.3, 6 L5.3, 20'],
+                symbolOffset: 10,
+                symbolSize: [35, 38]
+
+            }
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+            },
+            axisLine: {
+                lineStyle: {
+                    color: ['#32FCF7']
+                },
+                symbol:['none', 'path://M5, 20 L5, 5 L8, 8 L5,2 L2, 8, L5, 5 L5.3, 6 L5.3, 20'],
+                symbolOffset: 10,
+                symbolSize: [35, 38]
+            },
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    color: '#DFF8F8',
+                    opacity: 0.2
+                }
+            }
+        },
+        textStyle: {
+            color: '#DFF8F8'
+        },
+        series: [{
+            name: '执法人员',
+            type: 'line',
+            data: [35, 0, 36, 10, 86],
+            markLine: {
+                data: [
+                    {type: 'average', name: '平均值'}
+                ]
+            },
+            color: '#B1FFA8'
+        },{
+            name: '检查行为',
+            type: 'line',
+            data: [40,20,41,100,64],
+            markPoint: {
+                data: [
+                    {type: 'max', name: '最大值'},
+                    {type: 'min', name:　'最小值'}
+                ]
+            },
+            color: '#326FE9'
+        },
+            {
+                name: '处罚行为',
+                type: 'line',
+                data: [80,20,01,30,14],
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name:　'最小值'}
+                    ]
+                },
+                color: '#FFABAB'
+            },
+            {
+                name: '罚款金额',
+                type: 'line',
+                data: [33,36,22,12,44],
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name:　'最小值'}
+                    ]
+                },
+                color: '#F9ABFF'
+            }]
+    }
+    var pieOption1 = {
+        title: {
+            text: '检查结果',
+            textStyle: {
+                color: '#32FCF7'
+            },
+            textAlign: 'left',
+            itemGap: 300,
+            x: 'center',
+            y: 'bottom'
+        },
+        legend: {
+            x: 'center',
+            y: 'top',
+            textStyle: {
+                color: '#32f4f1'
+            }
+        },
+
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c}"
+        },
+        series: [
+            {
+                name: '检查结果',
+                type: 'pie',
+                radius : '50%',
+                center: ['50%', '50%'],
+                data:[
+                    {value:20, name:'好结果'},
+                    {value:80, name:'坏结果'}
+                ],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: '#4295B2'
+                    }
+                },
+                color: ['#ECE2A6', '#4295B2'],
+                label: {
+                    normal: {
+                        position: 'inner',
+                        formatter: '{d}%'
+                    },
+                }
+            }
+        ]
+    }
+    var pieOption2 = {
+        title: {
+            text: '处罚种类',
+            textStyle: {
+                color: '#32FCF7'
+            },
+            textAlign: 'left',
+            itemGap: 300,
+            x: 'center',
+            y: 'bottom'
+        },
+        // legend: {
+        //     x: 'center',
+        //     y: 'top',
+        //     textStyle: {
+        //         color: '#32f4f1'
+        //     }
+        //  },
+
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c}"
+        },
+        series: [
+            {
+                name: '检查方式',
+                type: 'pie',
+                radius : '50%',
+                center: ['50%', '50%'],
+                data:[
+                    {value:20, name:'好结果'},
+                    {value:80, name:'坏结果'}
+                ],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: '#4295B2'
+                    }
+                },
+                color: ['#ECE2A6', '#4295B2'],
+                label: {
+                    normal: {
+                        position: 'inner',
+                        formatter: '{d}%'
+                    },
+                }
+            }
+        ]
+    }
+    var pieOption3 = {
+        title: {
+            text: '处罚种类',
+            textStyle: {
+                color: '#32FCF7'
+            },
+            textAlign: 'left',
+            itemGap: 300,
+            x: 'center',
+            y: 'bottom'
+        },
+
+
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c}"
+        },
+        series: [
+            {
+                name: '处罚类型',
+                type: 'pie',
+                radius : '48%',
+                center: ['50%', '50%'],
+                data:[
+                    {value:20, name:'现场检查'},
+                    {value:80, name:'非现场检查'},
+                    {value:80, name:'重点检查'},
+                    {value:80, name:'联合检查'}
+                ],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: '#4295B2'
+                    }
+                },
+                color: ['#ECE2A6', '#4295B2', '#A6ECC4', '#46D0CC'],
+                label: {
+                    normal: {
+                        position: 'outer',
+
+                    },
+                }
+            }
+        ]
+    }
+    var pieOption4 = {
+        title: {
+            text: '还没想好',
+            textStyle: {
+                color: '#32FCF7'
+            },
+            textAlign: 'left',
+            x: 'center',
+            y: 'bottom'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c}"
+        },
+        series: [
+            {
+                name: '检查结果',
+                type: 'pie',
+                radius : '50%',
+                center: ['50%', '50%'],
+                data:[
+                    {value:20, name:'好结果'},
+                    {value:80, name:'坏结果'}
+                ],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: '#4295B2'
+                    }
+                },
+                color: ['#ECE2A6', '#4295B2']
+            }
+        ]
+    }
+    lineChart.setOption(lineOption);
+    pieChart1.setOption(pieOption1);
+    pieChart2.setOption(pieOption2);
+    pieChart3.setOption(pieOption3);
+    pieChart4.setOption(pieOption4);
+    $(function(){
+        var setting1 = {
+            cols: 3,
+            headers: [
+                {key: "", title:"排名"},
+                {key:"", title:"机构名称"},
+                {key:"", title:"检查次数"},
+            ],
+            tableId: 'data-table1',
+        }
+        var setting2 = {
+            cols: 3,
+            headers: [
+                {key: "", title:"排名"},
+                {key:"", title:"处罚对象"},
+                {key:"", title:"处罚次数"},
+            ],
+            tableId: 'data-table2',
+        }
+        var setting3 = {
+            cols: 3,
+            headers: [
+                {key: "", title:"排名"},
+                {key:"", title:"处罚对象"},
+                {key:"", title:"处罚金额"},
+            ],
+            tableId: 'data-table3',
+
+        }
+    })
+
+    window.onresize = function() {
+        console.log(window.clientHeight)
+        lineChart.resize();
+    };
+    var countUpOption = {
+        useEasing: true,
+        useGrouping: true,
+        separator: ',',
+        decimal: '.'
+    }
+    var objectNum = new CountUp('objectNum', 0, 222, 0, 1, countUpOption);
+    var enforceNum = new CountUp('enforceNum', 0, 222, 0, 1, countUpOption);
+    var checkNum = new CountUp('checkNum', 0, 222, 0, 1, countUpOption);
+    var punishNum = new CountUp('punishNum', 0, 222, 0, 1, countUpOption);
+    var checkNum = new CountUp('checkNum', 0, 222, 0, 1, countUpOption);
+    var reportNum = new CountUp('reportNum', 0, 222, 0, 1, countUpOption);
+    var ruleNum = new CountUp('ruleNum', 0, 222, 0, 1, countUpOption);
+    objectNum.start();
+    enforceNum.start();
+    checkNum.start();
+    punishNum.start();
+    checkNum.start();
+    reportNum.start();
+    ruleNum.start();
+</script>
+</html>
